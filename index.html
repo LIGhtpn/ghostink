@@ -1,872 +1,766 @@
-```html
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GhostInk Nigeria - Webnovel Ghostwriting & Stories Marketplace</title>
-    <!-- Tailwind CSS -->
+    <title>GhostInk Nigeria | Webnovel Ghostwriting & Marketplace</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
                     colors: {
                         brand: {
-                            50: '#fdf4ff',
-                            500: '#9333ea',
-                            600: '#7e22ce',
-                            700: '#6b21a8',
-                            900: '#581c87',
+                            50: '#fdf4f5',
+                            100: '#fbe8eb',
+                            500: '#e63946',
+                            600: '#d90429',
+                            700: '#b7091c',
+                            900: '#8d0801'
                         },
-                        naira: {
-                            gold: '#fbbf24',
-                            emerald: '#10b981'
+                        darknavy: {
+                            800: '#1d3557',
+                            900: '#0b1329'
                         }
                     }
                 }
             }
         }
     </script>
-    <!-- Inter Font & Lucide Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/lucide@latest"></script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .glass-panel {
-            background: rgba(15, 23, 42, 0.75);
-            backdrop-filter: blur(16px);
-            border: 1px solid rgba(147, 51, 234, 0.2);
-        }
-        .light .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            border: 1px solid rgba(147, 51, 234, 0.2);
-        }
-        ::-webkit-scrollbar { width: 8px; height: 8px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
-        ::-webkit-scrollbar-thumb { background: rgba(147, 51, 234, 0.4); border-radius: 4px; }
-        ::-webkit-scrollbar-thumb:hover { background: rgba(147, 51, 234, 0.6); }
-    </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-slate-50 text-slate-800 font-sans h-full flex flex-col justify-between selection:bg-brand-500 selection:text-white">
 
-    <!-- Notification Toast -->
-    <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-slate-900 border border-emerald-500 text-white px-6 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3">
-        <i data-lucide="check-circle" class="w-5 h-5 text-emerald-400"></i>
-        <span id="toast-message" class="font-medium text-sm">Action successful!</span>
-    </div>
-
-    <!-- Navigation Bar -->
-    <header class="sticky top-0 z-40 bg-slate-950/85 backdrop-blur-md border-b border-slate-800/80">
+    <!-- Top Navigation -->
+    <header class="bg-darknavy-900 text-white sticky top-0 z-50 shadow-md">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('landing')">
-                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-purple-600 to-amber-500 flex items-center justify-center shadow-lg shadow-purple-600/30">
-                    <i data-lucide="feather" class="w-6 h-6 text-white"></i>
+            <!-- Brand Logo -->
+            <a href="#" onclick="switchTab('marketplace')" class="flex items-center space-x-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-brand-500 flex items-center justify-center text-white font-bold text-xl shadow-lg group-hover:scale-105 transition-transform">
+                    <i class="fa-solid fa-pen-nib"></i>
                 </div>
                 <div>
-                    <div class="flex items-center space-x-1.5">
-                        <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-purple-400 via-amber-300 to-white bg-clip-text text-transparent">GhostInk</span>
-                        <span class="bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-[10px] font-bold px-2 py-0.5 rounded-md">NG 🇳🇬</span>
-                    </div>
-                    <span class="block text-[10px] uppercase tracking-widest text-slate-400 font-semibold">Nigerian Webnovel Marketplace</span>
+                    <span class="text-xl font-black tracking-wider text-white">GhostInk <span class="text-brand-500">Nigeria</span></span>
+                    <span class="block text-[10px] tracking-widest uppercase text-slate-400 font-medium">Verified Webnovel Hub 🇳🇬</span>
                 </div>
-            </div>
+            </a>
 
-            <!-- Desktop Navigation -->
-            <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
-                <button onclick="switchTab('landing')" id="nav-landing" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-purple-400 bg-purple-950/50">Home</button>
-                <button onclick="switchTab('ghostwriters')" id="nav-ghostwriters" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-900">Hire Ghostwriters</button>
-                <button onclick="switchTab('marketplace')" id="nav-marketplace" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-900">Ready Stories</button>
-                <button onclick="switchTab('gigs')" id="nav-gigs" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-900">Job Briefs</button>
-                <button onclick="switchTab('admin')" id="nav-admin" class="px-4 py-2 rounded-lg text-sm font-medium transition-colors text-amber-400 hover:bg-slate-900 flex items-center space-x-1.5">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i>
-                    <span>Admin Portal</span>
-                    <span id="admin-badge" class="hidden bg-amber-500 text-slate-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">0</span>
+            <!-- Desktop Nav Links -->
+            <nav class="hidden md:flex items-center space-x-6 text-sm font-medium">
+                <button onclick="switchTab('marketplace')" id="nav-marketplace" class="nav-btn text-brand-500 font-semibold transition hover:text-brand-500 flex items-center space-x-1.5">
+                    <i class="fa-solid fa-store"></i><span>Story Marketplace</span>
+                </button>
+                <button onclick="switchTab('writers')" id="nav-writers" class="nav-btn text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-users-viewfinder"></i><span>Hire Writers</span>
+                </button>
+                <button onclick="switchTab('post-brief')" id="nav-post-brief" class="nav-btn text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-file-circle-plus"></i><span>Post Brief</span>
+                </button>
+                <button onclick="switchTab('sell-story')" id="nav-sell-story" class="nav-btn text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-book-medical"></i><span>Sell Story</span>
+                </button>
+                <button onclick="switchTab('writer-onboard')" id="nav-writer-onboard" class="nav-btn text-slate-300 hover:text-white transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-id-card"></i><span>Join as Writer</span>
                 </button>
             </nav>
 
             <!-- Right Actions -->
-            <div class="flex items-center space-x-3">
-                <!-- Theme Toggle -->
-                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-slate-300 hover:text-white hover:border-purple-500/50 transition-all">
-                    <i data-lucide="sun" id="theme-icon-sun" class="w-4 h-4 hidden"></i>
-                    <i data-lucide="moon" id="theme-icon-moon" class="w-4 h-4"></i>
+            <div class="flex items-center space-x-4">
+                <button onclick="switchTab('admin')" id="nav-admin" class="relative text-xs bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 px-3.5 py-2 rounded-lg font-semibold transition flex items-center space-x-1.5">
+                    <i class="fa-solid fa-shield-halved text-brand-500"></i>
+                    <span>Admin Portal</span>
+                    <span id="admin-badge" class="hidden absolute -top-1.5 -right-1.5 bg-brand-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold">0</span>
                 </button>
-                
-                <!-- Action Dropdown CTA -->
-                <div class="relative group">
-                    <button class="bg-gradient-to-r from-purple-600 to-amber-600 hover:from-purple-500 hover:to-amber-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-purple-600/30 flex items-center space-x-2">
-                        <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                        <span>Publish & Post</span>
-                    </button>
-                    <div class="absolute right-0 mt-2 w-56 glass-panel rounded-2xl p-2 hidden group-hover:block shadow-2xl z-50 border border-purple-500/40">
-                        <button onclick="openModal('post-brief')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:bg-purple-900/40 flex items-center space-x-2">
-                            <i data-lucide="file-text" class="w-4 h-4 text-purple-400"></i>
-                            <span>Post Writing Brief (Client)</span>
-                        </button>
-                        <button onclick="openModal('list-story')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:bg-purple-900/40 flex items-center space-x-2">
-                            <i data-lucide="book" class="w-4 h-4 text-amber-400"></i>
-                            <span>Sell Completed Story</span>
-                        </button>
-                        <button onclick="openModal('create-profile')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-semibold text-slate-200 hover:bg-purple-900/40 flex items-center space-x-2">
-                            <i data-lucide="user-plus" class="w-4 h-4 text-emerald-400"></i>
-                            <span>Create Ghostwriter Profile</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Mobile Menu Toggle -->
-                <button onclick="toggleMobileMenu()" class="md:hidden p-2 rounded-xl bg-slate-900 border border-slate-800 text-slate-300">
-                    <i data-lucide="menu" class="w-6 h-6"></i>
+                <button onclick="mobileMenuToggle()" class="md:hidden text-slate-300 hover:text-white focus:outline-none text-xl p-2">
+                    <i class="fa-solid fa-bars"></i>
                 </button>
             </div>
         </div>
 
-        <!-- Mobile Menu Dropdown -->
-        <div id="mobile-menu" class="hidden md:hidden bg-slate-900 border-b border-slate-800 px-4 py-4 space-y-2">
-            <button onclick="switchTab('landing'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800">Home</button>
-            <button onclick="switchTab('ghostwriters'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800">Hire Ghostwriters</button>
-            <button onclick="switchTab('marketplace'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800">Ready Stories Marketplace</button>
-            <button onclick="switchTab('gigs'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-slate-200 hover:bg-slate-800">Job Briefs</button>
-            <button onclick="switchTab('admin'); toggleMobileMenu();" class="w-full text-left px-4 py-2.5 rounded-lg text-sm font-medium text-amber-400 hover:bg-slate-800 flex items-center justify-between">
-                <span>Admin Verification Portal</span>
-                <span id="admin-badge-mobile" class="bg-amber-500 text-slate-950 font-bold px-1.5 py-0.2 rounded-full text-[10px]">0</span>
-            </button>
-            <div class="pt-2 border-t border-slate-800 space-y-2">
-                <button onclick="openModal('post-brief'); toggleMobileMenu();" class="w-full text-center bg-purple-600 hover:bg-purple-500 text-white px-4 py-2.5 rounded-xl font-semibold text-sm">Post Writing Brief</button>
-                <button onclick="openModal('list-story'); toggleMobileMenu();" class="w-full text-center bg-amber-600 hover:bg-amber-500 text-slate-950 px-4 py-2.5 rounded-xl font-bold text-sm">Sell Completed Story</button>
-            </div>
+        <!-- Mobile Dropdown Navigation -->
+        <div id="mobile-menu" class="hidden md:hidden bg-darknavy-800 border-t border-slate-700 px-4 pt-3 pb-4 space-y-2">
+            <button onclick="switchTab('marketplace'); mobileMenuToggle();" class="block w-full text-left py-2 px-3 rounded-md text-sm font-medium hover:bg-slate-700">Story Marketplace</button>
+            <button onclick="switchTab('writers'); mobileMenuToggle();" class="block w-full text-left py-2 px-3 rounded-md text-sm font-medium hover:bg-slate-700">Hire Writers</button>
+            <button onclick="switchTab('post-brief'); mobileMenuToggle();" class="block w-full text-left py-2 px-3 rounded-md text-sm font-medium hover:bg-slate-700">Post Brief</button>
+            <button onclick="switchTab('sell-story'); mobileMenuToggle();" class="block w-full text-left py-2 px-3 rounded-md text-sm font-medium hover:bg-slate-700">Sell Story</button>
+            <button onclick="switchTab('writer-onboard'); mobileMenuToggle();" class="block w-full text-left py-2 px-3 rounded-md text-sm font-medium hover:bg-slate-700">Join as Writer</button>
         </div>
     </header>
 
     <!-- Main Content Container -->
-    <main class="flex-grow">
+    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
-        <!-- ================= 1. LANDING PAGE ================= -->
-        <div id="view-landing" class="view-section">
-            <section class="relative overflow-hidden pt-16 pb-28">
-                <div class="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-purple-900/30 via-slate-950/0 to-slate-950 pointer-events-none"></div>
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center">
-                    <div class="inline-flex items-center space-x-2 bg-purple-950/80 border border-purple-500/30 px-4 py-1.5 rounded-full text-xs font-medium text-purple-300 mb-8 shadow-inner">
-                        <span class="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
-                        <span>Enforced Minimum Rate: ₦1.50 per word • Secure Nigerian Escrow 🇳🇬</span>
-                    </div>
-                    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight max-w-4xl mx-auto leading-none mb-8">
-                        Nigeria's Premier <span class="bg-gradient-to-r from-purple-400 via-amber-300 to-purple-200 bg-clip-text text-transparent">Webnovel Marketplace</span>
-                    </h1>
-                    <p class="text-lg sm:text-xl text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
-                        Hire expert Nigerian ghostwriters for serialized fiction or buy fully written webnovels with custom tags like #BillionaireCEO, #AfricanFantasy, and #UrbanCultivation.
-                    </p>
-                    <div class="flex flex-col sm:flex-row items-center justify-center space-y-4 sm:space-y-0 sm:space-x-4">
-                        <button onclick="switchTab('marketplace')" class="w-full sm:w-auto bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-400 hover:to-purple-500 text-slate-950 font-bold px-8 py-4 rounded-2xl text-base shadow-xl transition-all transform hover:-translate-y-0.5">
-                            Explore Ready Stories
-                        </button>
-                        <button onclick="switchTab('ghostwriters')" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 border border-slate-700 text-slate-200 px-8 py-4 rounded-2xl font-bold text-base transition-all">
-                            Hire Ghostwriters
-                        </button>
-                    </div>
-
-                    <!-- Marketplace Mode Switchers -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto mt-20">
-                        <div onclick="switchTab('ghostwriters')" class="glass-panel p-8 rounded-3xl text-left cursor-pointer hover:border-purple-500 transition-all group">
-                            <div class="w-12 h-12 rounded-2xl bg-purple-950 text-purple-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="users" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-white mb-2">Hire Ghostwriters</h3>
-                            <p class="text-xs text-slate-400 mb-4">Post custom writing briefs or hire verified Nigerian authors for serials. Rates negotiated between clients & writers (Minimum ₦1.50/word).</p>
-                            <span class="text-xs font-semibold text-purple-400 flex items-center space-x-1">
-                                <span>Browse profiles</span>
-                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </span>
-                        </div>
-                        <div onclick="switchTab('marketplace')" class="glass-panel p-8 rounded-3xl text-left cursor-pointer hover:border-amber-500 transition-all group">
-                            <div class="w-12 h-12 rounded-2xl bg-amber-950 text-amber-400 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="book-open" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-white mb-2">Ready-to-Sell Stories</h3>
-                            <p class="text-xs text-slate-400 mb-4">Buy fully completed or multi-chapter webnovels vetted and verified by GhostInk admin. Tagged with popular tropes.</p>
-                            <span class="text-xs font-semibold text-amber-400 flex items-center space-x-1">
-                                <span>Browse verified stories</span>
-                                <i data-lucide="arrow-right" class="w-4 h-4"></i>
-                            </span>
-                        </div>
-                    </div>
+        <!-- TAB 1: STORY MARKETPLACE -->
+        <section id="tab-marketplace" class="tab-content space-y-8">
+            <div class="bg-gradient-to-r from-darknavy-900 to-darknavy-800 rounded-3xl p-8 sm:p-12 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute right-0 bottom-0 opacity-10 transform translate-x-10 translate-y-10">
+                    <i class="fa-solid fa-book-open text-9xl"></i>
                 </div>
-            </section>
-        </div>
-
-        <!-- ================= 2. HIRE GHOSTWRITERS VIEW ================= -->
-        <div id="view-ghostwriters" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-2">Nigerian Ghostwriter Directory</h1>
-                    <p class="text-slate-400 text-sm">Connect with professional Nigerian webnovelists. Minimum rate enforced at ₦1.50/word.</p>
+                <div class="max-w-2xl relative z-10 space-y-4">
+                    <span class="bg-brand-600/30 text-brand-400 border border-brand-500/30 text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">Verified Webnovel Catalog</span>
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight">Ready-to-Publish Webnovels by Nigerian Authors</h1>
+                    <p class="text-slate-300 text-sm sm:text-base">Browse fully written manuscripts with Webnovel tags, verified by our editorial team. Read free sample chapters and acquire exclusive publishing rights instantly.</p>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <button onclick="openModal('create-profile')" class="bg-purple-600 hover:bg-purple-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg flex items-center space-x-2">
-                        <i data-lucide="user-plus" class="w-4 h-4"></i>
-                        <span>Register as Writer</span>
-                    </button>
-                    <button onclick="openModal('post-brief')" class="bg-slate-900 border border-slate-700 hover:border-purple-500 text-slate-200 px-5 py-2.5 rounded-xl font-semibold text-sm">
-                        Post Brief
-                    </button>
-                </div>
-            </div>
-
-            <!-- Writers Grid (Empty State Handled via JS) -->
-            <div id="writers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Populated dynamically -->
-            </div>
-        </div>
-
-        <!-- ================= 3. READY STORIES MARKETPLACE VIEW ================= -->
-        <div id="view-marketplace" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-                <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-2">Ready-to-Sell Webnovel Marketplace</h1>
-                    <p class="text-slate-400 text-sm">Completed manuscripts vetted and verified by GhostInk admin.</p>
-                </div>
-                <button onclick="openModal('list-story')" class="bg-gradient-to-r from-amber-500 to-purple-600 hover:from-amber-400 text-slate-950 px-5 py-2.5 rounded-xl font-bold text-sm shadow-lg flex items-center space-x-2">
-                    <i data-lucide="plus-circle" class="w-4 h-4"></i>
-                    <span>List a Story for Sale</span>
-                </button>
             </div>
 
             <!-- Filters -->
-            <div class="glass-panel p-4 rounded-2xl mb-8 flex flex-wrap gap-4 items-center justify-between">
-                <div class="relative w-full md:w-80">
-                    <i data-lucide="search" class="absolute left-3.5 top-3 w-4 h-4 text-slate-400"></i>
-                    <input type="text" id="story-search" oninput="renderMarketplaceStories()" placeholder="Search stories or tags..." class="w-full bg-slate-900 border border-slate-700 rounded-xl pl-10 pr-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4 bg-white p-4 rounded-2xl shadow-sm border border-slate-200">
+                <div class="w-full sm:w-auto flex items-center space-x-2">
+                    <span class="text-sm font-semibold text-slate-500"><i class="fa-solid fa-filter mr-1"></i> Filter Genre:</span>
+                    <select id="market-genre-filter" onchange="renderMarketplace()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 font-medium">
+                        <option value="all">All Genres</option>
+                        <option value="Billionaire CEO">Billionaire CEO</option>
+                        <option value="African Fantasy">African Fantasy</option>
+                        <option value="Urban Cultivation">Urban Cultivation</option>
+                        <option value="Romance">Romance</option>
+                        <option value="Apocalypse / Sci-Fi">Apocalypse / Sci-Fi</option>
+                    </select>
                 </div>
-                <div class="flex items-center space-x-3">
-                    <select id="tag-filter" onchange="renderMarketplaceStories()" class="bg-slate-900 border border-slate-700 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-amber-500">
-                        <option value="">All Webnovel Tags</option>
-                        <option value="#BillionaireCEO">#BillionaireCEO</option>
-                        <option value="#AfricanFantasy">#AfricanFantasy</option>
-                        <option value="#UrbanCultivation">#UrbanCultivation</option>
-                        <option value="#Romance">#Romance</option>
-                        <option value="#Apocalyptic">#Apocalyptic</option>
+                <div class="text-xs text-slate-500 italic">
+                    All listed stories have passed strict admin verification & plagiarism checks.
+                </div>
+            </div>
+
+            <!-- Story Grid -->
+            <div id="marketplace-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- TAB 2: HIRE GHOSTWRITERS -->
+        <section id="tab-writers" class="tab-content space-y-8 hidden">
+            <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div class="space-y-2">
+                    <h1 class="text-2xl sm:text-3xl font-black text-darknavy-900">Hire Verified Nigerian Ghostwriters</h1>
+                    <p class="text-slate-500 text-sm">Professional webnovel authors skilled in pacing, cliffhangers, and genre tropes. Filter by rates starting from ₦1.50/word.</p>
+                </div>
+                <div class="flex items-center space-x-3 w-full sm:w-auto">
+                    <select id="writer-genre-filter" onchange="renderWriters()" class="bg-slate-50 border border-slate-300 rounded-xl px-4 py-2.5 text-sm font-medium w-full sm:w-auto focus:ring-2 focus:ring-brand-500">
+                        <option value="all">All Specialties</option>
+                        <option value="Billionaire CEO">Billionaire CEO</option>
+                        <option value="African Fantasy">African Fantasy</option>
+                        <option value="Urban Cultivation">Urban Cultivation</option>
+                        <option value="Romance">Romance</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Stories Grid -->
-            <div id="marketplace-stories-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Populated dynamically -->
+            <div id="writers-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Dynamically populated -->
             </div>
-        </div>
+        </section>
 
-        <!-- ================= 4. JOB BRIEFS VIEW ================= -->
-        <div id="view-gigs" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
+        <!-- TAB 3: POST CUSTOM BRIEF -->
+        <section id="tab-post-brief" class="tab-content hidden max-w-3xl mx-auto space-y-6">
+            <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-200 space-y-6">
                 <div>
-                    <h1 class="text-3xl font-extrabold tracking-tight mb-2">Active Writing Job Briefs</h1>
-                    <p class="text-slate-400 text-sm">Browse serialization projects posted by clients seeking Nigerian ghostwriters.</p>
+                    <span class="text-brand-600 text-xs font-bold uppercase tracking-widest">Custom Project Request</span>
+                    <h1 class="text-2xl sm:text-3xl font-black text-darknavy-900 mt-1">Post a Ghostwriting Brief</h1>
+                    <p class="text-slate-500 text-sm mt-1">Set your requirements, target word count, and budget. Note: Minimum rate is strictly <strong class="text-darknavy-900">₦1.50 per word</strong>.</p>
                 </div>
-                <button onclick="openModal('post-brief')" class="bg-purple-600 hover:bg-purple-500 text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg flex items-center space-x-2">
-                    <i data-lucide="plus" class="w-4 h-4"></i>
-                    <span>Post Writing Brief</span>
-                </button>
-            </div>
 
-            <div id="jobs-container" class="space-y-4">
-                <!-- Populated dynamically -->
-            </div>
-        </div>
+                <form onsubmit="handlePostBrief(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Your Name / Publisher Name *</label>
+                            <input type="text" id="brief-client" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. Apex Publishing">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Project Title *</label>
+                            <input type="text" id="brief-title" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. The Alpha's Forbidden Vow">
+                        </div>
+                    </div>
 
-        <!-- ================= 5. ADMIN VERIFICATION PORTAL ================= -->
-        <div id="view-admin" class="view-section hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-            <div class="mb-8">
-                <div class="inline-flex items-center space-x-2 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full text-xs font-bold text-amber-400 mb-2">
-                    <i data-lucide="shield-alert" class="w-3.5 h-3.5"></i>
-                    <span>Platform Owner Control Panel</span>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Genre *</label>
+                            <select id="brief-genre" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Billionaire CEO">Billionaire CEO</option>
+                                <option value="African Fantasy">African Fantasy</option>
+                                <option value="Urban Cultivation">Urban Cultivation</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Apocalypse / Sci-Fi">Apocalypse / Sci-Fi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Word Count *</label>
+                            <input type="number" id="brief-words" min="5000" value="50000" oninput="calculateBriefBudget()" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Rate per Word (₦) *</label>
+                            <input type="number" id="brief-rate" min="1.50" step="0.1" value="2.00" oninput="calculateBriefBudget()" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div class="bg-brand-50 border border-brand-100 p-4 rounded-2xl flex items-center justify-between text-sm">
+                        <span class="text-slate-700 font-medium">Estimated Total Escrow Budget:</span>
+                        <span id="brief-total-display" class="text-lg font-black text-brand-600">₦100,000</span>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Synopsis & Detailed Instructions *</label>
+                        <textarea id="brief-desc" rows="4" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Outline characters, plot beats, tone, and chapter milestone expectations..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-darknavy-900 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-paper-plane"></i><span>Publish Brief to Job Board</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 4: SELL YOUR STORY (SUBMISSION FOR VERIFICATION) -->
+        <section id="tab-sell-story" class="tab-content hidden max-w-3xl mx-auto space-y-6">
+            <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <span class="text-brand-600 text-xs font-bold uppercase tracking-widest">Author Monetization</span>
+                    <h1 class="text-2xl sm:text-3xl font-black text-darknavy-900 mt-1">Submit Your Completed Story for Sale</h1>
+                    <p class="text-slate-500 text-sm mt-1">Upload your full manuscript file or paste text. Include a compelling sample chapter excerpt so buyers can preview your writing before purchasing. <strong class="text-darknavy-900">Requires admin verification before going live.</strong></p>
                 </div>
-                <h1 class="text-3xl font-extrabold tracking-tight mb-1">Story Verification Queue</h1>
-                <p class="text-slate-400 text-sm">Review, verify, and approve user-submitted stories before they appear in the public marketplace.</p>
+
+                <form onsubmit="handleStorySubmission(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Author Pen Name *</label>
+                            <input type="text" id="sell-author" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. Author Light Pen">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Story Title *</label>
+                            <input type="text" id="sell-title" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. Level Up in Lagos">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Genre / Tag *</label>
+                            <select id="sell-genre" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Billionaire CEO">Billionaire CEO</option>
+                                <option value="African Fantasy">African Fantasy</option>
+                                <option value="Urban Cultivation">Urban Cultivation</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Apocalypse / Sci-Fi">Apocalypse / Sci-Fi</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Total Word Count *</label>
+                            <input type="number" id="sell-words" min="1000" value="60000" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Asking Price (₦) *</label>
+                            <input type="number" id="sell-price" min="1000" value="45000" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Story Synopsis & Webnovel Hooks *</label>
+                        <textarea id="sell-synopsis" rows="3" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Brief summary, key plot twists, and target audience hook..."></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Free Sample Chapter / Preview Excerpt *</label>
+                            <textarea id="sell-sample" rows="4" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Paste Chapter 1 excerpt here so clients can inspect your writing quality..."></textarea>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Manuscript File / Link *</label>
+                            <input type="text" id="sell-file" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none mb-2" placeholder="Google Drive / Dropbox link or File Name">
+                            <p class="text-[11px] text-slate-400">Provide a secure download link containing the complete DOCX/PDF manuscript. Only verified buyers receive access after purchase.</p>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full bg-darknavy-900 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-cloud-arrow-up"></i><span>Submit Story for Admin Review</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 5: JOIN AS GHOSTWRITER -->
+        <section id="tab-writer-onboard" class="tab-content hidden max-w-3xl mx-auto space-y-6">
+            <div class="bg-white rounded-3xl p-8 sm:p-10 shadow-sm border border-slate-200 space-y-6">
+                <div>
+                    <span class="text-brand-600 text-xs font-bold uppercase tracking-widest">Writer Registry</span>
+                    <h1 class="text-2xl sm:text-3xl font-black text-darknavy-900 mt-1">Apply as a Verified Ghostwriter</h1>
+                    <p class="text-slate-500 text-sm mt-1">Join Nigeria's elite webnovel ghostwriting network. Set your custom rate (Minimum ₦1.50/word) and showcase sample writing.</p>
+                </div>
+
+                <form onsubmit="handleWriterOnboard(event)" class="space-y-5">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Full Name / Pen Name *</label>
+                            <input type="text" id="onboard-name" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="e.g. Chinedu Okafor">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Primary Specialty / Genre *</label>
+                            <select id="onboard-genre" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Billionaire CEO">Billionaire CEO</option>
+                                <option value="African Fantasy">African Fantasy</option>
+                                <option value="Urban Cultivation">Urban Cultivation</option>
+                                <option value="Romance">Romance</option>
+                                <option value="Apocalypse / Sci-Fi">Apocalypse / Sci-Fi</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Rate per Word (₦) - Min ₦1.50 *</label>
+                            <input type="number" id="onboard-rate" min="1.50" step="0.1" value="2.00" required class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Experience Level *</label>
+                            <select id="onboard-exp" class="w-full bg-slate-50 border border-slate-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-brand-500 outline-none">
+                                <option value="Mid-Level (1-3 Years)">Mid-Level (1-3 Years)</option>
+                                <option value="Senior Webnovel Author (3+ Years)">Senior Webnovel Author (3+ Years)</option>
+                                <option value="Top Rated Professional">Top Rated Professional</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold uppercase text-slate-600 mb-1">Portfolio Sample Work Excerpt *</label>
+                        <textarea id="onboard-sample" rows="4" required class="w-full bg-slate-50 border border-slate-300 rounded-xl p-4 text-sm focus:ring-2 focus:ring-brand-500 outline-none" placeholder="Paste a 200-300 word sample of your writing that clients can review before hiring you..."></textarea>
+                    </div>
+
+                    <button type="submit" class="w-full bg-darknavy-900 hover:bg-brand-600 text-white font-bold py-3.5 rounded-xl transition shadow-lg flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-user-check"></i><span>Submit Profile for Review</span>
+                    </button>
+                </form>
+            </div>
+        </section>
+
+        <!-- TAB 6: ADMIN DASHBOARD -->
+        <section id="tab-admin" class="tab-content hidden space-y-8">
+            <div class="bg-darknavy-900 text-white rounded-3xl p-8 sm:p-10 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-6">
+                <div>
+                    <span class="bg-brand-600 text-white text-xs font-bold uppercase tracking-widest px-3 py-1 rounded-full">Admin Verification Center</span>
+                    <h1 class="text-2xl sm:text-4xl font-black mt-2">Platform Control Panel</h1>
+                    <p class="text-slate-300 text-sm mt-1">Review pending story sales and writer portfolio submissions before publishing them live to the marketplace.</p>
+                </div>
+                <div class="bg-slate-800 border border-slate-700 px-6 py-4 rounded-2xl text-center">
+                    <span id="admin-pending-count" class="text-3xl font-black text-brand-500">0</span>
+                    <span class="block text-xs text-slate-400 uppercase tracking-wider mt-1">Pending Verifications</span>
+                </div>
             </div>
 
-            <div id="admin-pending-container" class="space-y-4">
-                <!-- Populated dynamically -->
+            <!-- Pending Stories Table -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-xl font-black text-darknavy-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-book-bookmark text-brand-600"></i>
+                    <span>Pending Stories for Sale</span>
+                </h2>
+                <div id="admin-stories-list" class="space-y-4">
+                    <!-- Dynamically populated -->
+                </div>
             </div>
-        </div>
+
+            <!-- Pending Writers Table -->
+            <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm space-y-4">
+                <h2 class="text-xl font-black text-darknavy-900 flex items-center space-x-2">
+                    <i class="fa-solid fa-user-pen text-brand-600"></i>
+                    <span>Pending Writer Profiles</span>
+                </h2>
+                <div id="admin-writers-list" class="space-y-4">
+                    <!-- Dynamically populated -->
+                </div>
+            </div>
+        </section>
 
     </main>
 
+    <!-- Modal for Story Preview & Purchase / Hiring -->
+    <div id="modal-container" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div id="modal-content" class="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-8 max-h-[90vh] overflow-y-auto shadow-2xl relative space-y-6">
+            <!-- Dynamically populated modal content -->
+        </div>
+    </div>
+
     <!-- Footer -->
-    <footer class="bg-slate-950 border-t border-slate-800/80 mt-20 py-12">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div class="flex items-center space-x-3">
-                <div class="w-8 h-8 rounded-lg bg-gradient-to-tr from-purple-600 to-amber-500 flex items-center justify-center">
-                    <i data-lucide="feather" class="w-4 h-4 text-white"></i>
+    <footer class="bg-darknavy-900 text-white border-t border-slate-800 mt-16 py-12">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row items-center justify-between gap-6 text-center md:text-left">
+            <div class="space-y-2">
+                <div class="flex items-center justify-center md:justify-start space-x-3">
+                    <div class="w-8 h-8 rounded-lg bg-brand-600 flex items-center justify-center text-white font-bold">
+                        <i class="fa-solid fa-pen-nib text-sm"></i>
+                    </div>
+                    <span class="text-lg font-black tracking-wider">GhostInk <span class="text-brand-500">Nigeria</span></span>
                 </div>
-                <span class="text-lg font-bold tracking-tight text-white">GhostInk Nigeria 🇳🇬</span>
+                <p class="text-xs text-slate-400">Connecting elite Nigerian webnovel authors with global and local publishing houses.</p>
             </div>
-            <p class="text-xs text-slate-500 text-center md:text-left">
-                &copy; 2026 GhostInk Nigeria Marketplace. Minimum Rate: ₦1.50/word. All rights reserved.
-            </p>
-            <div class="flex items-center space-x-6 text-xs text-slate-400">
-                <a href="#" onclick="switchTab('admin'); return false;" class="text-amber-400 hover:underline">Admin Panel</a>
-                <a href="#" class="hover:text-white">Escrow Terms</a>
-                <a href="#" class="hover:text-white">Support</a>
+            <div class="text-xs text-slate-500">
+                &copy; 2026 GhostInk Nigeria. All rights reserved. Enforced min rate: ₦1.50/word.
             </div>
         </div>
     </footer>
 
-    <!-- ================= MODALS ================= -->
-
-    <!-- Modal 1: Post Writing Brief -->
-    <div id="modal-post-brief" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-xl rounded-3xl p-6 sm:p-8 relative border border-purple-500/30 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeModal('post-brief')" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="mb-6">
-                <h3 class="text-2xl font-black text-white mb-1">Post a Writing Brief (Client)</h3>
-                <p class="text-xs text-slate-400">Set your budget. Enforced minimum ghostwriting rate is ₦1.50 / word.</p>
-            </div>
-            <form onsubmit="handlePostBrief(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Project Title</label>
-                    <input type="text" id="brief-title" required placeholder="e.g., The Billionaire of Victoria Island" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-purple-500">
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Genre / Tag</label>
-                        <select id="brief-genre" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                            <option value="#BillionaireCEO">#BillionaireCEO</option>
-                            <option value="#AfricanFantasy">#AfricanFantasy</option>
-                            <option value="#UrbanCultivation">#UrbanCultivation</option>
-                            <option value="#Romance">#Romance</option>
-                            <option value="#Apocalyptic">#Apocalyptic</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Total Word Count</label>
-                        <input type="number" id="brief-words" required placeholder="e.g., 50000" min="1000" oninput="calculateMinBudget()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-1">Total Budget (₦ Naira)</label>
-                    <span id="min-budget-note" class="text-[11px] text-amber-400 block mb-2">Minimum required at ₦1.50/word: ₦0</span>
-                    <input type="number" id="brief-budget" required placeholder="e.g., 150000" oninput="validateBudget()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Synopsis & Requirements</label>
-                    <textarea id="brief-desc" rows="4" required placeholder="Detail the character arcs, cliffhanger style, and Nigerian setting..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-                    Publish Job Brief
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 2: List Completed Story for Sale -->
-    <div id="modal-list-story" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-xl rounded-3xl p-6 sm:p-8 relative border border-amber-500/30 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeModal('list-story')" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="mb-6">
-                <h3 class="text-2xl font-black text-white mb-1">List Completed Story for Sale</h3>
-                <p class="text-xs text-slate-400">Submit your fully written webnovel for admin verification before marketplace publication.</p>
-            </div>
-            <form onsubmit="handleListStory(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Story Title</label>
-                    <input type="text" id="story-title" required placeholder="e.g., The Oracle of Ibadan" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Author Name / Pen Name</label>
-                    <input type="text" id="story-author" required placeholder="e.g., Zainab Mohammed" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Webnovel Tag</label>
-                        <select id="story-tag" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                            <option value="#BillionaireCEO">#BillionaireCEO</option>
-                            <option value="#AfricanFantasy">#AfricanFantasy</option>
-                            <option value="#UrbanCultivation">#UrbanCultivation</option>
-                            <option value="#Romance">#Romance</option>
-                            <option value="#Apocalyptic">#Apocalyptic</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Word Count</label>
-                        <input type="number" id="story-words" required placeholder="e.g., 65000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Selling Price (₦ Naira)</label>
-                    <input type="number" id="story-price" required placeholder="e.g., 45000" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Synopsis & Chapter Hook</label>
-                    <textarea id="story-synopsis" rows="4" required placeholder="Enter compelling synopsis for prospective buyers..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-amber-600 hover:bg-amber-500 text-slate-950 font-bold py-3.5 rounded-xl shadow-lg transition-all">
-                    Submit for Admin Verification
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Modal 3: Create Ghostwriter Profile -->
-    <div id="modal-create-profile" class="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm hidden items-center justify-center p-4">
-        <div class="glass-panel w-full max-w-xl rounded-3xl p-6 sm:p-8 relative border border-purple-500/30 max-h-[90vh] overflow-y-auto">
-            <button onclick="closeModal('create-profile')" class="absolute top-6 right-6 text-slate-400 hover:text-white"><i data-lucide="x" class="w-6 h-6"></i></button>
-            <div class="mb-6">
-                <h3 class="text-2xl font-black text-white mb-1">Register Ghostwriter Profile</h3>
-                <p class="text-xs text-slate-400">Join the directory. Minimum rate is ₦1.50 per word.</p>
-            </div>
-            <form onsubmit="handleCreateProfile(event)" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Full Name / Pen Name</label>
-                    <input type="text" id="profile-name" required placeholder="e.g., Oluwaseun Adeleke" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none">
-                </div>
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Primary Genre</label>
-                        <select id="profile-genre" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200">
-                            <option value="#BillionaireCEO">#BillionaireCEO</option>
-                            <option value="#AfricanFantasy">#AfricanFantasy</option>
-                            <option value="#UrbanCultivation">#UrbanCultivation</option>
-                            <option value="#Romance">#Romance</option>
-                            <option value="#Apocalyptic">#Apocalyptic</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Rate per Word (₦)</label>
-                        <input type="number" step="0.5" id="profile-rate" min="1.5" required placeholder="e.g., 15" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200">
-                        <span class="text-[10px] text-amber-400 mt-1 block">Must be at least ₦1.50 / word</span>
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Tagline / Specialization</label>
-                    <input type="text" id="profile-tagline" required placeholder="e.g., Victoria Island CEO Romance & Suspense Master" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200">
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-300 uppercase tracking-wider mb-2">Professional Bio</label>
-                    <textarea id="profile-bio" rows="3" required placeholder="Describe your experience with Wattpad, Webnovel, or Dreame..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-3 text-sm text-slate-200"></textarea>
-                </div>
-                <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-bold py-3.5 rounded-xl shadow-lg transition-all">
-                    Create Ghostwriter Profile
-                </button>
-            </form>
-        </div>
-    </div>
-
-    <!-- Application JavaScript -->
+    <!-- JavaScript Application Logic -->
     <script>
-        // State initialized from LocalStorage (Completely empty initially if none stored)
+        // Initial Empty State Data Structure with LocalStorage Persistence
         let state = {
-            writers: JSON.parse(localStorage.getItem('ghostink_writers') || '[]'),
-            stories: JSON.parse(localStorage.getItem('ghostink_stories') || '[]'), // Approved ready stories
-            pendingStories: JSON.parse(localStorage.getItem('ghostink_pending') || '[]'), // Pending admin verification
-            jobs: JSON.parse(localStorage.getItem('ghostink_jobs') || '[]')
+            stories: JSON.parse(localStorage.getItem('ghostink_stories')) || [],
+            writers: JSON.parse(localStorage.getItem('ghostink_writers')) || [],
+            pendingStories: JSON.parse(localStorage.getItem('ghostink_pending_stories')) || [],
+            pendingWriters: JSON.parse(localStorage.getItem('ghostink_pending_writers')) || []
         };
 
         function saveState() {
-            localStorage.setItem('ghostink_writers', JSON.stringify(state.writers));
-            localStorage.setItem('ghostink_stories', JSON.stringify(state.stories));
-            localStorage.setItem('ghostink_pending', JSON.stringify(state.pendingStories));
-            localStorage.setItem('ghostink_jobs', JSON.stringify(state.jobs));
-            updateAdminBadge();
+            try {
+                localStorage.setItem('ghostink_stories', JSON.stringify(state.stories));
+                localStorage.setItem('ghostink_writers', JSON.stringify(state.writers));
+                localStorage.setItem('ghostink_pending_stories', JSON.stringify(state.pendingStories));
+                localStorage.setItem('ghostink_pending_writers', JSON.stringify(state.pendingWriters));
+                updateAdminBadge();
+            } catch (err) {
+                console.error("Storage error: ", err);
+                alert("Could not save. Please check your browser privacy settings.");
+            }
         }
 
-        document.addEventListener('DOMContentLoaded', () => {
-            lucide.createIcons();
-            renderWriters();
-            renderMarketplaceStories();
-            renderJobs();
-            renderAdminQueue();
-            updateAdminBadge();
-        });
+        // Navigation Switching
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
 
-        // Tab Switching
-        function switchTab(tabName) {
-            document.querySelectorAll('.view-section').forEach(v => v.classList.add('hidden'));
-            document.getElementById(`view-${tabName}`).classList.remove('hidden');
-
-            const navs = ['landing', 'ghostwriters', 'marketplace', 'gigs', 'admin'];
-            navs.forEach(n => {
-                const btn = document.getElementById(`nav-${n}`);
-                if (btn) {
-                    if (n === tabName) {
-                        btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-colors text-purple-400 bg-purple-950/50";
-                    } else {
-                        btn.className = "px-4 py-2 rounded-lg text-sm font-medium transition-colors text-slate-300 hover:text-white hover:bg-slate-900";
-                    }
-                }
+            document.querySelectorAll('.nav-btn').forEach(el => {
+                el.classList.remove('text-brand-500', 'font-semibold');
+                el.classList.add('text-slate-300');
             });
+            const activeNav = document.getElementById(`nav-${tabId}`);
+            if (activeNav) {
+                activeNav.classList.remove('text-slate-300');
+                activeNav.classList.add('text-brand-500', 'font-semibold');
+            }
             window.scrollTo({ top: 0, behavior: 'smooth' });
-            lucide.createIcons();
+
+            if (tabId === 'marketplace') renderMarketplace();
+            if (tabId === 'writers') renderWriters();
+            if (tabId === 'admin') renderAdminDashboard();
         }
 
-        // Theme Toggle
-        let isDarkMode = true;
-        function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            const html = document.documentElement;
-            if (isDarkMode) {
-                html.classList.add('dark');
-                html.classList.remove('light');
-                document.getElementById('theme-icon-sun').classList.add('hidden');
-                document.getElementById('theme-icon-moon').classList.remove('hidden');
-            } else {
-                html.classList.remove('dark');
-                html.classList.add('light');
-                document.getElementById('theme-icon-sun').classList.remove('hidden');
-                document.getElementById('theme-icon-moon').classList.add('hidden');
-            }
-        }
-
-        // Modal Helpers
-        function openModal(name) {
-            document.getElementById(`modal-${name}`).classList.remove('hidden');
-            document.getElementById(`modal-${name}`).classList.add('flex');
-            lucide.createIcons();
-        }
-
-        function closeModal(name) {
-            document.getElementById(`modal-${name}`).classList.remove('flex');
-            document.getElementById(`modal-${name}`).classList.add('hidden');
-        }
-
-        // Minimum Rate Calculation & Validation for Briefs
-        function calculateMinBudget() {
-            const words = parseFloat(document.getElementById('brief-words').value) || 0;
-            const minAllowed = words * 1.5;
-            document.getElementById('min-budget-note').innerText = `Minimum required at ₦1.50/word: ₦${minAllowed.toLocaleString()}`;
-            document.getElementById('brief-budget').min = minAllowed;
-        }
-
-        function validateBudget() {
-            const words = parseFloat(document.getElementById('brief-words').value) || 0;
-            const budget = parseFloat(document.getElementById('brief-budget').value) || 0;
-            const minAllowed = words * 1.5;
-            if (budget < minAllowed) {
-                document.getElementById('brief-budget').setCustomValidity(`Budget cannot be below ₦1.50 per word (Minimum: ₦${minAllowed.toLocaleString()})`);
-            } else {
-                document.getElementById('brief-budget').setCustomValidity('');
-            }
-        }
-
-        // Handlers for Form Submissions
-        function handleCreateProfile(e) {
-            e.preventDefault();
-            const name = document.getElementById('profile-name').value;
-            const genre = document.getElementById('profile-genre').value;
-            const rate = parseFloat(document.getElementById('profile-rate').value);
-            const tagline = document.getElementById('profile-tagline').value;
-            const bio = document.getElementById('profile-bio').value;
-
-            if (rate < 1.5) {
-                showToast('Error: Minimum rate enforced is ₦1.50 per word.');
-                return;
-            }
-
-            const newWriter = {
-                id: Date.now(),
-                name,
-                genre,
-                rate: `₦${rate} / word`,
-                rateVal: rate,
-                tagline,
-                bio,
-                rating: 5.0,
-                reviewsCount: 1,
-                avatar: `https://placehold.co/120x120/7e22ce/ffffff?text=${encodeURIComponent(name.substring(0,2).toUpperCase())}`
-            };
-
-            state.writers.unshift(newWriter);
-            saveState();
-            renderWriters();
-            closeModal('create-profile');
-            e.target.reset();
-            showToast('Ghostwriter profile successfully created!');
-            switchTab('ghostwriters');
-        }
-
-        function handlePostBrief(e) {
-            e.preventDefault();
-            const title = document.getElementById('brief-title').value;
-            const genre = document.getElementById('brief-genre').value;
-            const words = parseInt(document.getElementById('brief-words').value);
-            const budget = parseFloat(document.getElementById('brief-budget').value);
-            const desc = document.getElementById('brief-desc').value;
-
-            if (budget < words * 1.5) {
-                showToast('Error: Budget is below the ₦1.50/word minimum rate rule.');
-                return;
-            }
-
-            const newJob = {
-                id: Date.now(),
-                title,
-                genre,
-                words: words.toLocaleString() + ' words',
-                budget: '₦' + budget.toLocaleString(),
-                desc,
-                client: 'Verified Client',
-                posted: 'Just now'
-            };
-
-            state.jobs.unshift(newJob);
-            saveState();
-            renderJobs();
-            closeModal('post-brief');
-            e.target.reset();
-            showToast('Writing brief posted successfully!');
-            switchTab('gigs');
-        }
-
-        function handleListStory(e) {
-            e.preventDefault();
-            const title = document.getElementById('story-title').value;
-            const author = document.getElementById('story-author').value;
-            const tag = document.getElementById('story-tag').value;
-            const words = parseInt(document.getElementById('story-words').value);
-            const price = parseFloat(document.getElementById('story-price').value);
-            const synopsis = document.getElementById('story-synopsis').value;
-
-            const pendingStory = {
-                id: Date.now(),
-                title,
-                author,
-                tag,
-                words: words.toLocaleString() + ' words',
-                price: '₦' + price.toLocaleString(),
-                synopsis,
-                submittedAt: new Date().toLocaleDateString()
-            };
-
-            state.pendingStories.unshift(pendingStory);
-            saveState();
-            renderAdminQueue();
-            closeModal('list-story');
-            e.target.reset();
-            showToast('Story submitted! Awaiting admin verification.');
-            switchTab('admin');
-        }
-
-        // Admin Verification Actions
-        function approveStory(id) {
-            const index = state.pendingStories.findIndex(s => s.id === id);
-            if (index > -1) {
-                const story = state.pendingStories.splice(index, 1)[0];
-                state.stories.unshift(story);
-                saveState();
-                renderAdminQueue();
-                renderMarketplaceStories();
-                showToast(`Story "${story.title}" verified and published to marketplace!`);
-            }
-        }
-
-        function rejectStory(id) {
-            const index = state.pendingStories.findIndex(s => s.id === id);
-            if (index > -1) {
-                const story = state.pendingStories.splice(index, 1)[0];
-                saveState();
-                renderAdminQueue();
-                showToast(`Story "${story.title}" rejected.`);
-            }
+        function mobileMenuToggle() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
         }
 
         function updateAdminBadge() {
-            const count = state.pendingStories.length;
-            const badges = [document.getElementById('admin-badge'), document.getElementById('admin-badge-mobile')];
-            badges.forEach(b => {
-                if (b) {
-                    if (count > 0) {
-                        b.innerText = count;
-                        b.classList.remove('hidden');
-                    } else {
-                        b.classList.add('hidden');
-                    }
-                }
+            const totalPending = state.pendingStories.length + state.pendingWriters.length;
+            const badge = document.getElementById('admin-badge');
+            const countDisplay = document.getElementById('admin-pending-count');
+            if (countDisplay) countDisplay.innerText = totalPending;
+            if (totalPending > 0) {
+                badge.innerText = totalPending;
+                badge.classList.remove('hidden');
+            } else {
+                badge.classList.add('hidden');
+            }
+        }
+
+        // 1. Marketplace Rendering
+        function renderMarketplace() {
+            const grid = document.getElementById('marketplace-grid');
+            const genreFilter = document.getElementById('market-genre-filter').value;
+            grid.innerHTML = '';
+
+            const filtered = genreFilter === 'all' ? state.stories : state.stories.filter(s => s.genre === genreFilter);
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-folder-open text-4xl text-slate-300 mb-3"></i>
+                        <h3 class="text-lg font-bold text-slate-700">No Verified Stories Available Yet</h3>
+                        <p class="text-slate-400 text-sm mt-1">Authors can submit stories for sale using the "Sell Story" tab.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            filtered.forEach(story => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-6 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-brand-50 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">${story.genre}</span>
+                                <span class="text-xs text-slate-400 font-medium"><i class="fa-solid fa-file-word mr-1"></i>${Number(story.words).toLocaleString()} words</span>
+                            </div>
+                            <h3 class="text-xl font-black text-darknavy-900">${story.title}</h3>
+                            <p class="text-xs text-slate-500 font-medium">By <span class="text-darknavy-900 font-bold">${story.author}</span></p>
+                            <p class="text-slate-600 text-sm line-clamp-2">${story.synopsis}</p>
+                        </div>
+                        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Asking Price</span>
+                                <span class="text-lg font-black text-darknavy-900">₦${Number(story.price).toLocaleString()}</span>
+                            </div>
+                            <button onclick="openStoryModal('${story.id}')" class="bg-darknavy-900 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                                View Preview & Buy
+                            </button>
+                        </div>
+                    </div>
+                `;
             });
         }
 
-        // Rendering Functions (With Empty States)
+        // 2. Writers Directory Rendering
         function renderWriters() {
             const grid = document.getElementById('writers-grid');
-            if (state.writers.length === 0) {
+            const genreFilter = document.getElementById('writer-genre-filter').value;
+            grid.innerHTML = '';
+
+            const filtered = genreFilter === 'all' ? state.writers : state.writers.filter(w => w.genre === genreFilter);
+
+            if (filtered.length === 0) {
                 grid.innerHTML = `
-                    <div class="col-span-full glass-panel p-12 rounded-3xl text-center">
-                        <div class="w-16 h-16 rounded-2xl bg-purple-950 text-purple-400 flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="users" class="w-8 h-8"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">No Ghostwriters Registered Yet</h3>
-                        <p class="text-slate-400 text-xs max-w-md mx-auto mb-6">Be the first Nigerian webnovel ghostwriter to create a profile and connect with clients.</p>
-                        <button onclick="openModal('create-profile')" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-xl text-xs font-bold shadow-lg">
-                            Register Your Profile Now
-                        </button>
+                    <div class="col-span-full py-16 text-center bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-user-slash text-4xl text-slate-300 mb-3"></i>
+                        <h3 class="text-lg font-bold text-slate-700">No Verified Writers Available Yet</h3>
+                        <p class="text-slate-400 text-sm mt-1">Ghostwriters can apply via the "Join as Writer" tab.</p>
                     </div>
                 `;
-            } else {
-                grid.innerHTML = state.writers.map(w => `
-                    <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
-                        <div>
-                            <div class="flex items-center space-x-3 mb-4">
-                                <img src="${w.avatar}" class="w-14 h-14 rounded-2xl object-cover border border-purple-500/30">
-                                <div>
-                                    <h3 class="font-bold text-white text-base">${w.name}</h3>
-                                    <span class="text-xs text-amber-400 font-medium">${w.genre}</span>
-                                </div>
+                return;
+            }
+
+            filtered.forEach(writer => {
+                grid.innerHTML += `
+                    <div class="bg-white rounded-3xl border border-slate-200 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                        <div class="p-6 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full">${writer.genre}</span>
+                                <span class="bg-emerald-50 text-emerald-600 text-xs font-bold px-2.5 py-1 rounded-full"><i class="fa-solid fa-shield-check mr-1"></i>Verified</span>
                             </div>
-                            <p class="text-xs text-slate-300 font-medium mb-2">${w.tagline}</p>
-                            <p class="text-xs text-slate-400 line-clamp-3 mb-4 leading-relaxed">${w.bio}</p>
+                            <h3 class="text-xl font-black text-darknavy-900">${writer.name}</h3>
+                            <p class="text-xs text-slate-500">${writer.exp}</p>
+                            <div class="bg-slate-50 p-3 rounded-2xl text-xs text-slate-600 italic">
+                                "${writer.sample.substring(0, 120)}..."
+                            </div>
                         </div>
-                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
-                            <span class="text-sm font-extrabold text-emerald-400">${w.rate}</span>
-                            <button onclick="showToast('Initiating secure chat with ${w.name}')" class="bg-purple-600/20 hover:bg-purple-600 text-purple-300 hover:text-white px-4 py-2 rounded-xl text-xs font-semibold">
+                        <div class="px-6 py-4 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
+                            <div>
+                                <span class="block text-[10px] text-slate-400 uppercase font-semibold">Rate</span>
+                                <span class="text-sm font-black text-brand-600">₦${Number(writer.rate).toFixed(2)} / word</span>
+                            </div>
+                            <button onclick="openWriterModal('${writer.id}')" class="bg-darknavy-900 hover:bg-brand-600 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
                                 Hire Writer
                             </button>
                         </div>
                     </div>
-                `).join('');
-            }
-            lucide.createIcons();
-        }
-
-        function renderMarketplaceStories() {
-            const grid = document.getElementById('marketplace-stories-grid');
-            const search = document.getElementById('story-search').value.toLowerCase();
-            const tagFilter = document.getElementById('tag-filter').value;
-
-            let filtered = state.stories.filter(s => {
-                const matchesSearch = s.title.toLowerCase().includes(search) || s.author.toLowerCase().includes(search) || s.synopsis.toLowerCase().includes(search);
-                const matchesTag = !tagFilter || s.tag === tagFilter;
-                return matchesSearch && matchesTag;
+                `;
             });
+        }
 
-            if (filtered.length === 0) {
-                grid.innerHTML = `
-                    <div class="col-span-full glass-panel p-12 rounded-3xl text-center">
-                        <div class="w-16 h-16 rounded-2xl bg-amber-950 text-amber-400 flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="book-open" class="w-8 h-8"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">No Verified Stories in Marketplace</h3>
-                        <p class="text-slate-400 text-xs max-w-md mx-auto mb-6">Authors can list completed novels. Once verified by admin, they appear here for purchase.</p>
-                        <button onclick="openModal('list-story')" class="bg-amber-600 hover:bg-amber-500 text-slate-950 px-6 py-3 rounded-xl text-xs font-bold shadow-lg">
-                            List a Completed Story
-                        </button>
+        // Custom Brief Calculator
+        function calculateBriefBudget() {
+            const words = parseFloat(document.getElementById('brief-words').value) || 0;
+            const rate = parseFloat(document.getElementById('brief-rate').value) || 1.5;
+            const total = words * rate;
+            document.getElementById('brief-total-display').innerText = `₦${total.toLocaleString()}`;
+        }
+
+        // Submissions Handlers
+        function handlePostBrief(e) {
+            e.preventDefault();
+            alert('Custom brief successfully posted to the job board! Writers can now view and apply.');
+            e.target.reset();
+            switchTab('writers');
+        }
+
+        function handleStorySubmission(e) {
+            e.preventDefault();
+            const newStory = {
+                id: 'story_' + Date.now(),
+                author: document.getElementById('sell-author').value,
+                title: document.getElementById('sell-title').value,
+                genre: document.getElementById('sell-genre').value,
+                words: parseInt(document.getElementById('sell-words').value),
+                price: parseInt(document.getElementById('sell-price').value),
+                synopsis: document.getElementById('sell-synopsis').value,
+                sample: document.getElementById('sell-sample').value,
+                file: document.getElementById('sell-file').value
+            };
+            state.pendingStories.push(newStory);
+            saveState();
+            alert('Story submitted successfully! It has been sent to the Admin Dashboard for verification and will appear on the marketplace once approved.');
+            e.target.reset();
+            switchTab('marketplace');
+        }
+
+        function handleWriterOnboard(e) {
+            e.preventDefault();
+            const newWriter = {
+                id: 'writer_' + Date.now(),
+                name: document.getElementById('onboard-name').value,
+                genre: document.getElementById('onboard-genre').value,
+                rate: parseFloat(document.getElementById('onboard-rate').value),
+                exp: document.getElementById('onboard-exp').value,
+                sample: document.getElementById('onboard-sample').value
+            };
+            state.pendingWriters.push(newWriter);
+            saveState();
+            alert('Writer application submitted! Our team will review your sample work before listing your profile.');
+            e.target.reset();
+            switchTab('writers');
+        }
+
+        // Modals
+        function openStoryModal(id) {
+            const story = state.stories.find(s => s.id === id);
+            if (!story) return;
+            const container = document.getElementById('modal-content');
+            container.innerHTML = `
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <span class="bg-brand-50 text-brand-600 text-xs font-bold px-3 py-1 rounded-full">${story.genre}</span>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-black text-darknavy-900">${story.title}</h2>
+                    <p class="text-xs text-slate-500 font-medium">Author: <strong class="text-slate-800">${story.author}</strong> | Word Count: ${Number(story.words).toLocaleString()} words</p>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-slate-600 mb-1">Synopsis</h4>
+                        <p class="text-slate-600 text-sm">${story.synopsis}</p>
                     </div>
-                `;
-            } else {
-                grid.innerHTML = filtered.map(s => `
-                    <div class="glass-panel p-6 rounded-2xl flex flex-col justify-between">
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-brand-600 mb-1"><i class="fa-solid fa-book-open-reader mr-1"></i> Free Sample Chapter Excerpt</h4>
+                        <div class="bg-slate-50 p-4 rounded-2xl text-slate-700 text-sm whitespace-pre-line border border-slate-200 max-h-48 overflow-y-auto">${story.sample}</div>
+                    </div>
+                    <div class="bg-darknavy-900 text-white p-6 rounded-2xl flex items-center justify-between">
                         <div>
-                            <div class="flex items-center justify-between mb-3">
-                                <span class="bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[11px] font-bold px-3 py-1 rounded-full">${s.tag}</span>
-                                <span class="text-xs text-slate-400 font-medium">${s.words}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-white mb-1">${s.title}</h3>
-                            <p class="text-xs text-purple-400 font-semibold mb-3">By ${s.author}</p>
-                            <p class="text-xs text-slate-400 line-clamp-3 mb-4 leading-relaxed">${s.synopsis}</p>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Total Purchase Price</span>
+                            <span class="text-2xl font-black">₦${Number(story.price).toLocaleString()}</span>
                         </div>
-                        <div class="pt-4 border-t border-slate-800 flex items-center justify-between">
-                            <span class="text-base font-black text-emerald-400">${s.price}</span>
-                            <button onclick="showToast('Secure purchase inquiry sent for ${s.title}!')" class="bg-amber-600 hover:bg-amber-500 text-slate-950 px-4 py-2 rounded-xl text-xs font-bold">
-                                Buy Story
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            lucide.createIcons();
-        }
-
-        function renderJobs() {
-            const container = document.getElementById('jobs-container');
-            if (state.jobs.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-panel p-12 rounded-3xl text-center">
-                        <div class="w-16 h-16 rounded-2xl bg-purple-950 text-purple-400 flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="file-text" class="w-8 h-8"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">No Job Briefs Posted Yet</h3>
-                        <p class="text-slate-400 text-xs max-w-md mx-auto mb-6">Clients can post custom serialization briefs (Minimum ₦1.50/word enforced).</p>
-                        <button onclick="openModal('post-brief')" class="bg-purple-600 hover:bg-purple-500 text-white px-6 py-3 rounded-xl text-xs font-bold">
-                            Post First Brief
+                        <button onclick="alert('Secure escrow checkout initiated for ${story.title}. Full manuscript file (${story.file}) will be unlocked upon payment confirmation.'); closeModal();" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg">
+                            Buy & Unlock Full Manuscript
                         </button>
                     </div>
-                `;
-            } else {
-                container.innerHTML = state.jobs.map(j => `
-                    <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6">
-                        <div class="space-y-2 max-w-2xl">
-                            <div class="flex items-center space-x-3">
-                                <span class="bg-purple-950 text-purple-300 text-[11px] font-bold px-3 py-1 rounded-full">${j.genre}</span>
-                                <span class="text-xs text-slate-400">${j.words} • Posted ${j.posted}</span>
-                            </div>
-                            <h3 class="text-lg font-bold text-white">${j.title}</h3>
-                            <p class="text-xs text-slate-400 leading-relaxed">${j.desc}</p>
-                        </div>
-                        <div class="flex flex-col md:items-end justify-between gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-slate-800">
-                            <div class="text-lg font-black text-emerald-400">${j.budget}</div>
-                            <button onclick="showToast('Proposal submitted successfully!')" class="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl text-xs font-bold">
-                                Submit Proposal
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            lucide.createIcons();
+                </div>
+            `;
+            document.getElementById('modal-container').classList.remove('hidden');
         }
 
-        function renderAdminQueue() {
-            const container = document.getElementById('admin-pending-container');
+        function openWriterModal(id) {
+            const writer = state.writers.find(w => w.id === id);
+            if (!writer) return;
+            const container = document.getElementById('modal-content');
+            container.innerHTML = `
+                <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+                    <span class="bg-slate-100 text-slate-700 text-xs font-bold px-3 py-1 rounded-full">${writer.genre}</span>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 text-lg"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="space-y-4">
+                    <h2 class="text-2xl font-black text-darknavy-900">${writer.name}</h2>
+                    <p class="text-xs text-slate-500">${writer.exp} &bull; Rate: <strong class="text-brand-600">₦${Number(writer.rate).toFixed(2)} / word</strong></p>
+                    <div>
+                        <h4 class="text-xs font-bold uppercase text-brand-600 mb-1"><i class="fa-solid fa-feather mr-1"></i> Portfolio Writing Sample</h4>
+                        <div class="bg-slate-50 p-4 rounded-2xl text-slate-700 text-sm whitespace-pre-line border border-slate-200 max-h-48 overflow-y-auto">${writer.sample}</div>
+                    </div>
+                    <div class="bg-darknavy-900 text-white p-6 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <span class="block text-xs text-slate-400 uppercase font-semibold">Ready to hire?</span>
+                            <span class="text-xs text-slate-300">Secure milestone escrow protected</span>
+                        </div>
+                        <button onclick="alert('Hiring request sent to ${writer.name}. Our platform manager will connect you via email.'); closeModal();" class="bg-brand-600 hover:bg-brand-500 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg">
+                            Hire Ghostwriter Now
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('modal-container').classList.remove('hidden');
+        }
+
+        function closeModal() {
+            document.getElementById('modal-container').classList.add('hidden');
+        }
+
+        // Admin Dashboard Rendering & Actions
+        function renderAdminDashboard() {
+            const storiesList = document.getElementById('admin-stories-list');
+            const writersList = document.getElementById('admin-writers-list');
+
+            // Render Pending Stories
+            storiesList.innerHTML = '';
             if (state.pendingStories.length === 0) {
-                container.innerHTML = `
-                    <div class="glass-panel p-12 rounded-3xl text-center">
-                        <div class="w-16 h-16 rounded-2xl bg-amber-950 text-amber-400 flex items-center justify-center mx-auto mb-4">
-                            <i data-lucide="shield-check" class="w-8 h-8"></i>
-                        </div>
-                        <h3 class="text-xl font-bold text-white mb-2">Verification Queue is Empty</h3>
-                        <p class="text-slate-400 text-xs max-w-md mx-auto">When authors submit completed stories for sale, they will appear here for your review and verification.</p>
-                    </div>
-                `;
+                storiesList.innerHTML = `<p class="text-slate-400 text-sm italic">No pending story submissions.</p>`;
             } else {
-                container.innerHTML = state.pendingStories.map(s => `
-                    <div class="glass-panel p-6 rounded-2xl flex flex-col md:flex-row md:items-center justify-between gap-6 border-amber-500/40">
-                        <div class="space-y-2 max-w-2xl">
-                            <div class="flex items-center space-x-3">
-                                <span class="bg-amber-500/20 text-amber-300 text-[11px] font-bold px-3 py-1 rounded-full">${s.tag}</span>
-                                <span class="text-xs text-slate-400">Submitted by <strong>${s.author}</strong> on ${s.submittedAt}</span>
+                state.pendingStories.forEach((story, idx) => {
+                    storiesList.innerHTML += `
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold text-brand-600">${story.genre} &bull; ₦${Number(story.price).toLocaleString()}</span>
+                                <h4 class="text-lg font-black text-darknavy-900">${story.title} <span class="text-xs font-normal text-slate-500">by ${story.author}</span></h4>
+                                <p class="text-xs text-slate-600 line-clamp-1"><strong>Synopsis:</strong> ${story.synopsis}</p>
+                                <p class="text-xs text-slate-500"><strong>File:</strong> ${story.file}</p>
                             </div>
-                            <h3 class="text-lg font-bold text-white">${s.title} (${s.words})</h3>
-                            <p class="text-xs text-slate-300 bg-slate-900 p-3 rounded-xl border border-slate-800">${s.synopsis}</p>
+                            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                                <button onclick="verifyStory(${idx})" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                                    <i class="fa-solid fa-check mr-1"></i> Verify & Publish
+                                </button>
+                                <button onclick="rejectStory(${idx})" class="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                                    <i class="fa-solid fa-trash mr-1"></i> Reject
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex flex-col sm:flex-row items-center gap-3 border-t md:border-t-0 pt-4 md:pt-0 border-slate-800">
-                            <div class="text-emerald-400 font-black text-base mb-2 sm:mb-0 mr-2">${s.price}</div>
-                            <button onclick="approveStory(${s.id})" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-500 text-white px-4 py-2.5 rounded-xl text-xs font-bold flex items-center justify-center space-x-1">
-                                <i data-lucide="check" class="w-4 h-4"></i><span>Verify & Publish</span>
-                            </button>
-                            <button onclick="rejectStory(${s.id})" class="w-full sm:w-auto bg-red-600/20 hover:bg-red-600 text-red-300 hover:text-white px-4 py-2.5 rounded-xl text-xs font-bold">
-                                Reject
-                            </button>
-                        </div>
-                    </div>
-                `).join('');
+                    `;
+                });
             }
-            lucide.createIcons();
+
+            // Render Pending Writers
+            writersList.innerHTML = '';
+            if (state.pendingWriters.length === 0) {
+                writersList.innerHTML = `<p class="text-slate-400 text-sm italic">No pending writer profiles.</p>`;
+            } else {
+                state.pendingWriters.forEach((writer, idx) => {
+                    writersList.innerHTML += `
+                        <div class="bg-slate-50 border border-slate-200 p-5 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div class="space-y-1">
+                                <span class="text-xs font-bold text-slate-700">${writer.genre} &bull; ₦${Number(writer.rate).toFixed(2)}/word</span>
+                                <h4 class="text-lg font-black text-darknavy-900">${writer.name} <span class="text-xs font-normal text-slate-500">(${writer.exp})</span></h4>
+                                <p class="text-xs text-slate-600 italic line-clamp-1">"${writer.sample}"</p>
+                            </div>
+                            <div class="flex items-center space-x-2 w-full sm:w-auto">
+                                <button onclick="verifyWriter(${idx})" class="flex-1 sm:flex-none bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                                    <i class="fa-solid fa-check mr-1"></i> Verify Profile
+                                </button>
+                                <button onclick="rejectWriter(${idx})" class="flex-1 sm:flex-none bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                                    <i class="fa-solid fa-trash mr-1"></i> Reject
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+            updateAdminBadge();
         }
 
-        function showToast(msg) {
-            const toast = document.getElementById('toast');
-            document.getElementById('toast-message').innerText = msg;
-            toast.classList.remove('translate-y-24', 'opacity-0');
-            toast.classList.add('translate-y-0', 'opacity-100');
-            setTimeout(() => {
-                toast.classList.remove('translate-y-0', 'opacity-100');
-                toast.classList.add('translate-y-24', 'opacity-0');
-            }, 3500);
+        function verifyStory(idx) {
+            const story = state.pendingStories.splice(idx, 1)[0];
+            state.stories.push(story);
+            saveState();
+            renderAdminDashboard();
+            alert(`Story "${story.title}" verified and published live to the marketplace!`);
         }
 
-        function toggleMobileMenu() {
-            document.getElementById('mobile-menu').classList.toggle('hidden');
+        function rejectStory(idx) {
+            state.pendingStories.splice(idx, 1);
+            saveState();
+            renderAdminDashboard();
         }
+
+        function verifyWriter(idx) {
+            const writer = state.pendingWriters.splice(idx, 1)[0];
+            state.writers.push(writer);
+            saveState();
+            renderAdminDashboard();
+            alert(`Writer "${writer.name}" verified and listed in the directory!`);
+        }
+
+        function rejectWriter(idx) {
+            state.pendingWriters.splice(idx, 1);
+            saveState();
+            renderAdminDashboard();
+        }
+
+        // Initial Load
+        updateAdminBadge();
     </script>
 </body>
 </html>
-```
